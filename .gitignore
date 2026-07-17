@@ -1,11 +1,13 @@
 .env
 .env.*
 !.env.example
+!.env.testing
 node_modules/
 vendor/
 __pycache__/
 *.py[cod]
 coverage/
+.phpunit.result.cache
 .DS_Store
 *.log
 tmp/

@@ -18,8 +18,7 @@ final class XPayrService
         return Http::acceptJson()
             ->withToken($secretKey)
             ->baseUrl(rtrim((string) config('xpayr.base_url'), '/'))
-            ->timeout((int) config('xpayr.timeout', 20))
-            ->retry(2, 250, throw: false);
+            ->timeout((int) config('xpayr.timeout', 20));
     }
 
     /** @param array<string, mixed> $payload @return array<string, mixed> */

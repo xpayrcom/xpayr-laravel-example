@@ -3,35 +3,49 @@
 [![CI](https://github.com/xpayrcom/xpayr-laravel-example/actions/workflows/ci.yml/badge.svg)](https://github.com/xpayrcom/xpayr-laravel-example/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0f766e.svg)](LICENSE)
 
-Reference Laravel integration for creating XPayr checkout sessions, persisting payment state, and verifying webhook events safely.
+Runnable Laravel 12 application for creating XPayr checkout sessions, persisting payment state, and verifying webhook events safely.
 
-> **Status:** Framework integration reference
+> **Status:** Standalone testable application
 
 ## Purpose
 
-Provide a production-minded Laravel recipe without hiding payment-state or webhook-security decisions behind generated code.
+Provide a production-minded Laravel application without hiding payment-state or webhook-security decisions behind generated code.
 
 ## Included
 
 - Server-side checkout controller and XPayr API service
 - Payment persistence migration and model
 - Raw-body webhook verification with idempotent updates
+- SQLite-ready local setup and full feature tests
 
 ## Quick start
 
 ```bash
-Review README installation steps, copy the integration files into a Laravel 11 or 12 application, and configure a test key.
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate
+php artisan serve
 ```
 
 ## Installation
 
-1. Copy `app/`, `config/xpayr.php`, the migration, and `routes/xpayr.php` into a Laravel 11 or 12 application.
-2. Load `routes/xpayr.php` from `bootstrap/app.php` or merge the routes into your API routes.
-3. Copy the XPayr variables from `.env.example`; begin with an `sk_test_*` key.
-4. Run `php artisan migrate`.
-5. Register `https://your-domain.example/webhooks/xpayr` in the XPayr merchant dashboard.
+1. Set `XPAYR_SECRET_KEY` to an `sk_test_*` key in `.env`.
+2. Set `XPAYR_WEBHOOK_SECRET` to the secret configured in the XPayr merchant dashboard.
+3. Run the SQLite migrations with `php artisan migrate`.
+4. Create sessions through authenticated `POST /api/checkout/xpayr` requests.
+5. Register `https://your-domain.example/api/webhooks/xpayr` in the XPayr merchant dashboard.
+
+Run the complete local suite with:
+
+```bash
+php artisan test
+```
 
 The checkout endpoint requires your application authentication middleware. The webhook endpoint verifies the untouched body, stores every event under a unique event ID, and applies the payment update in the same database transaction.
+
+Checkout creation is intentionally not retried automatically because repeating a `POST /payments` request without an idempotency contract could create duplicate sessions. Applications should persist the returned session ID and resolve uncertain requests through order-level reconciliation.
 
 Do not grant products from the checkout response. Fulfillment starts only after verified webhook/API state confirms payment completion.
 
