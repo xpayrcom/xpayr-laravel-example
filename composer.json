@@ -5,6 +5,12 @@
     "description": "Runnable Laravel 12 reference application for XPayr checkout sessions and verified webhooks.",
     "keywords": ["xpayr", "laravel", "crypto-payments", "webhooks"],
     "license": "MIT",
+    "homepage": "https://xpayr.com/developers",
+    "support": {
+        "docs": "https://xpayr.com/developers",
+        "issues": "https://github.com/xpayrcom/xpayr-laravel-example/issues",
+        "source": "https://github.com/xpayrcom/xpayr-laravel-example"
+    },
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
